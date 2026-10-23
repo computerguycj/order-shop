@@ -19,8 +19,7 @@ app.MapPost("/orders", (OrderRequest request, IOrderRepository orders) =>
 app.MapPost("/orders/{id}/dispatch", (string id, IOrderRepository orders) =>
 {
     if (orders.Find(id) is not { } order) return Results.NotFound();
-    order.Dispatch();
-    return Results.Ok();
+    return order.TryDispatch() ? Results.Ok() : Results.Conflict();
 });
 
 app.MapPost("/orders/{id}/cancel", (string id, IOrderRepository orders) =>

@@ -27,4 +27,13 @@ public class CancelOrderSpecs
         orders.CancelOrder();               // When I cancel that order
         orders.AssertCancellationRefused(); // Then the cancellation is refused
     }
+
+    [Test]
+    public void ACancelledOrderCannotBeDispatched()
+    {
+        orders.PlaceOrder();                // Given I have placed an order
+        orders.CancelOrder();               //   and cancelled it
+        orders.DispatchOrder();             // When the order is dispatched
+        orders.AssertDispatchRefused();     // Then the dispatch is refused
+    }
 }

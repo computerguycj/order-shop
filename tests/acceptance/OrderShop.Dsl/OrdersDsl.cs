@@ -10,6 +10,7 @@ public class OrdersDsl(IOrdersDriver driver)
 {
     private string orderId = "";
     private bool cancellationAccepted;
+    private bool dispatchAccepted;
 
     // The one place that chooses a protocol driver. To run the same specs
     // through another channel (a browser, a queue), change it here.
@@ -25,7 +26,7 @@ public class OrdersDsl(IOrdersDriver driver)
             Quantity: quantity,
             Payment:  "Test card"));
 
-    public void DispatchOrder() => driver.DispatchOrder(orderId);
+    public void DispatchOrder() => dispatchAccepted = driver.DispatchOrder(orderId);
 
     public void CancelOrder() => cancellationAccepted = driver.CancelOrder(orderId);
 
@@ -39,5 +40,11 @@ public class OrdersDsl(IOrdersDriver driver)
     {
         Assert.That(cancellationAccepted, Is.False, "cancellation was accepted");
         Assert.That(driver.GetOrderStatus(orderId), Is.EqualTo("Dispatched"));
+    }
+
+    public void AssertDispatchRefused()
+    {
+        Assert.That(dispatchAccepted, Is.False, "dispatch was accepted");
+        Assert.That(driver.GetOrderStatus(orderId), Is.EqualTo("Cancelled"));
     }
 }

@@ -19,9 +19,19 @@ public class OrderTests
     public void ADispatchedOrderCannotBeCancelled()
     {
         var order = new Order("o-1");
-        order.Dispatch();
+        order.TryDispatch();
 
         Assert.That(order.TryCancel(), Is.False);
         Assert.That(order.Status, Is.EqualTo(OrderStatus.Dispatched));
+    }
+
+    [Test]
+    public void ACancelledOrderCannotBeDispatched()
+    {
+        var order = new Order("o-1");
+        order.TryCancel();
+
+        Assert.That(order.TryDispatch(), Is.False);
+        Assert.That(order.Status, Is.EqualTo(OrderStatus.Cancelled));
     }
 }

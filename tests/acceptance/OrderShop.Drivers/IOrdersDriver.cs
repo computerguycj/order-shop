@@ -6,7 +6,7 @@ namespace OrderShop.Drivers;
 public interface IOrdersDriver
 {
     string PlaceOrder(OrderDetails details);   // returns the new order's id
-    void DispatchOrder(string orderId);
+    bool DispatchOrder(string orderId);        // true = accepted, false = refused
     bool CancelOrder(string orderId);          // true = accepted, false = refused
     string GetOrderStatus(string orderId);
 }

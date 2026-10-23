@@ -15,8 +15,8 @@ public class HttpOrdersDriver(HttpClient http) : IOrdersDriver
         return response.Content.ReadFromJsonAsync<IdResponse>().Result!.Id;
     }
 
-    public void DispatchOrder(string orderId) =>
-        http.PostAsync($"/orders/{orderId}/dispatch", null).Result.EnsureSuccessStatusCode();
+    public bool DispatchOrder(string orderId) =>
+        http.PostAsync($"/orders/{orderId}/dispatch", null).Result.StatusCode == HttpStatusCode.OK;
 
     public bool CancelOrder(string orderId) =>
         http.PostAsync($"/orders/{orderId}/cancel", null).Result.StatusCode == HttpStatusCode.OK;

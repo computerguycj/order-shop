@@ -8,7 +8,12 @@ public class Order(string id)
     public string Id { get; } = id;
     public OrderStatus Status { get; private set; } = OrderStatus.Placed;
 
-    public void Dispatch() => Status = OrderStatus.Dispatched;
+    public bool TryDispatch()
+    {
+        if (Status == OrderStatus.Cancelled) return false;    // business rule
+        Status = OrderStatus.Dispatched;
+        return true;
+    }
 
     public bool TryCancel()
     {
