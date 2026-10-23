@@ -1,4 +1,4 @@
-namespace OrderShop.AcceptanceTests.Drivers;
+namespace OrderShop.Drivers;
 
 // Layer 3 – the protocol driver's interface.
 // Anything that can place, dispatch and cancel orders can sit behind this:

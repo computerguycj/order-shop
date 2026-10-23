@@ -1,6 +1,7 @@
-using OrderShop.AcceptanceTests.Drivers;
+using NUnit.Framework;
+using OrderShop.Drivers;
 
-namespace OrderShop.AcceptanceTests.Dsl;
+namespace OrderShop.Dsl;
 
 // Layer 2 – the DSL.
 // Speaks the language of the problem domain, fills in defaults the specs
@@ -9,6 +10,12 @@ public class OrdersDsl(IOrdersDriver driver)
 {
     private string orderId = "";
     private bool cancellationAccepted;
+
+    // The one place that chooses a protocol driver. To run the same specs
+    // through another channel (a browser, a queue), change it here.
+    public static OrdersDsl Create() => new(new HttpOrdersDriver(SystemUnderTest.Client));
+
+    public static void Shutdown() => SystemUnderTest.Stop();
 
     public void PlaceOrder(string product = "Standard widget", int quantity = 1) =>
         orderId = driver.PlaceOrder(new OrderDetails(

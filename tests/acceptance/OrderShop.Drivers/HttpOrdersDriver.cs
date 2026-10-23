@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 
-namespace OrderShop.AcceptanceTests.Drivers;
+namespace OrderShop.Drivers;
 
 // Layer 3 – the protocol driver.
 // The ONLY code in the test suite that knows about URLs, HTTP verbs,

@@ -3,30 +3,45 @@
 A worked example of Dave Farley's four-layer acceptance test model in C#/NUnit.
 The code is an illustration written for this exercise, not Dave's course code.
 
-| Layer | File |
-|---|---|
-| 1. Test cases | `tests/OrderShop.AcceptanceTests/Specs/CancelOrderSpecs.cs` |
-| 2. DSL | `tests/OrderShop.AcceptanceTests/Dsl/OrdersDsl.cs` |
-| 3. Protocol driver | `tests/OrderShop.AcceptanceTests/Drivers/HttpOrdersDriver.cs` (+ `IOrdersDriver.cs`) |
-| 4. System under test | `src/OrderShop/Program.cs` |
+## Layout
 
-`TestEnvironment.cs` is wiring, not a layer: it decides where the system under test runs.
+```
+src/
+  OrderShop.Domain/          business rules (Order, OrderStatus) – no HTTP, no storage
+  OrderShop.Api/             layer 4, the system under test: HTTP edge + in-memory storage adapter
+tests/
+  acceptance/
+    OrderShop.Specs/         layer 1 – test cases; can reference the DSL only
+    OrderShop.Dsl/           layer 2 – domain vocabulary, defaults, chooses the driver
+    OrderShop.Drivers/       layer 3 – HTTP client for the API; decides where the API runs
+  unit/
+    OrderShop.Domain.Tests/  unit tests for the domain rules, no HTTP
+```
 
-## Run the specs
+References only point downward: Specs → Dsl → Drivers → (over HTTP) Api → Domain.
+`OrderShop.Specs` sets `DisableTransitiveProjectReferences`, so a spec that tries to use a
+driver or `HttpClient` directly fails to compile.
+
+The drivers live under `tests/`, not `src/`: they are an independent client that checks the
+product from outside, and they don't ship with it.
+
+## Run the tests
 
 ```
 dotnet test
 ```
 
-This starts the app in-process. To run the same specs against a separately running copy:
+The acceptance specs start the API in-process. To run them against a separately running copy:
 
 ```
-dotnet run --project src/OrderShop --urls http://localhost:5080
-dotnet test -- 'TestRunParameters.Parameter(name="baseUrl", value="http://localhost:5080")'
+dotnet run --project src/OrderShop.Api --urls http://localhost:5080
+ORDERSHOP_BASE_URL=http://localhost:5080 dotnet test tests/acceptance/OrderShop.Specs
 ```
+
+(PowerShell: `$env:ORDERSHOP_BASE_URL = "http://localhost:5080"` before `dotnet test`.)
 
 ## Step through the layers
 
 Open `OrderShop.slnx` in Visual Studio or Rider, put a breakpoint on `orders.CancelOrder();`
 in `CancelOrderSpecs`, debug the test, and keep pressing Step Into (F11). You'll go
-Spec → DSL → driver → HTTP → the `/cancel` endpoint in `Program.cs`.
+Spec → DSL → driver → HTTP → the `/cancel` endpoint → `Order.TryCancel()` in the domain.

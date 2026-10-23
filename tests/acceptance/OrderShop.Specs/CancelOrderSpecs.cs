@@ -1,15 +1,15 @@
-using OrderShop.AcceptanceTests.Drivers;
-using OrderShop.AcceptanceTests.Dsl;
+using OrderShop.Dsl;
 
-namespace OrderShop.AcceptanceTests.Specs;
+namespace OrderShop.Specs;
 
 // Layer 1 – the test cases. The specs, almost word for word.
+// This project can only see the DSL: it cannot reference a driver or HTTP.
 public class CancelOrderSpecs
 {
     private OrdersDsl orders = null!;
 
     [SetUp]
-    public void SetUp() => orders = new OrdersDsl(new HttpOrdersDriver(TestEnvironment.Client));
+    public void SetUp() => orders = OrdersDsl.Create();
 
     [Test]
     public void CancellingAnUndispatchedOrderCancelsIt()

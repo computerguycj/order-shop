@@ -1,8 +1,15 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/OrderShop/OrderShop.csproj" />
+    <Project Path="src/OrderShop.Api/OrderShop.Api.csproj" />
+    <Project Path="src/OrderShop.Domain/OrderShop.Domain.csproj" />
   </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/OrderShop.AcceptanceTests/OrderShop.AcceptanceTests.csproj" />
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/acceptance/">
+    <Project Path="tests/acceptance/OrderShop.Drivers/OrderShop.Drivers.csproj" />
+    <Project Path="tests/acceptance/OrderShop.Dsl/OrderShop.Dsl.csproj" />
+    <Project Path="tests/acceptance/OrderShop.Specs/OrderShop.Specs.csproj" />
+  </Folder>
+  <Folder Name="/tests/unit/">
+    <Project Path="tests/unit/OrderShop.Domain.Tests/OrderShop.Domain.Tests.csproj" />
   </Folder>
 </Solution>
