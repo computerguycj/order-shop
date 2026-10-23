@@ -11,7 +11,8 @@ var app = builder.Build();
 
 app.MapPost("/orders", (OrderRequest request, IOrderRepository orders) =>
 {
-    var order = new Order(Guid.NewGuid().ToString());
+    if (Order.TryPlace(Guid.NewGuid().ToString(), request.Quantity) is not { } order)
+        return Results.BadRequest();
     orders.Add(order);
     return Results.Ok(new { id = order.Id });
 });

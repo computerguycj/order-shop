@@ -9,6 +9,7 @@ namespace OrderShop.Dsl;
 public class OrdersDsl(IOrdersDriver driver)
 {
     private string orderId = "";
+    private bool placementAccepted;
     private bool cancellationAccepted;
     private bool dispatchAccepted;
 
@@ -18,13 +19,17 @@ public class OrdersDsl(IOrdersDriver driver)
 
     public static void Shutdown() => SystemUnderTest.Stop();
 
-    public void PlaceOrder(string product = "Standard widget", int quantity = 1) =>
-        orderId = driver.PlaceOrder(new OrderDetails(
+    public void PlaceOrder(string product = "Standard widget", int quantity = 1)
+    {
+        var id = driver.PlaceOrder(new OrderDetails(
             Customer: "Test customer",      // defaults: the specs never mention these
             Address:  "1 Test Street",
             Product:  product,
             Quantity: quantity,
             Payment:  "Test card"));
+        placementAccepted = id is not null;
+        orderId = id ?? "";
+    }
 
     public void DispatchOrder() => dispatchAccepted = driver.DispatchOrder(orderId);
 
@@ -47,4 +52,7 @@ public class OrdersDsl(IOrdersDriver driver)
         Assert.That(dispatchAccepted, Is.False, "dispatch was accepted");
         Assert.That(driver.GetOrderStatus(orderId), Is.EqualTo("Cancelled"));
     }
+
+    public void AssertOrderRejected() =>
+        Assert.That(placementAccepted, Is.False, "order was accepted");
 }

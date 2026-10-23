@@ -8,10 +8,10 @@ namespace OrderShop.Drivers;
 // status codes and JSON.
 public class HttpOrdersDriver(HttpClient http) : IOrdersDriver
 {
-    public string PlaceOrder(OrderDetails details)
+    public string? PlaceOrder(OrderDetails details)
     {
         var response = http.PostAsJsonAsync("/orders", details).Result;
-        response.EnsureSuccessStatusCode();
+        if (response.StatusCode != HttpStatusCode.OK) return null;
         return response.Content.ReadFromJsonAsync<IdResponse>().Result!.Id;
     }
 

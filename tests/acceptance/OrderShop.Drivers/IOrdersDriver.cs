@@ -5,7 +5,7 @@ namespace OrderShop.Drivers;
 // HTTP today, a message queue or a browser tomorrow.
 public interface IOrdersDriver
 {
-    string PlaceOrder(OrderDetails details);   // returns the new order's id
+    string? PlaceOrder(OrderDetails details);  // the new order's id, or null if refused
     bool DispatchOrder(string orderId);        // true = accepted, false = refused
     bool CancelOrder(string orderId);          // true = accepted, false = refused
     string GetOrderStatus(string orderId);
