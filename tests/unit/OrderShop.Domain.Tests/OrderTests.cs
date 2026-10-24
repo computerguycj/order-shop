@@ -9,7 +9,7 @@ public class OrderTests
     [Test]
     public void APlacedOrderCanBeCancelled()
     {
-        var order = new Order("o-1");
+        var order = Order.TryPlace("o-1", quantity: 1)!;
 
         Assert.That(order.TryCancel(), Is.True);
         Assert.That(order.Status, Is.EqualTo(OrderStatus.Cancelled));
@@ -18,7 +18,7 @@ public class OrderTests
     [Test]
     public void ADispatchedOrderCannotBeCancelled()
     {
-        var order = new Order("o-1");
+        var order = Order.TryPlace("o-1", quantity: 1)!;
         order.TryDispatch();
 
         Assert.That(order.TryCancel(), Is.False);
@@ -28,7 +28,7 @@ public class OrderTests
     [Test]
     public void ACancelledOrderCannotBeDispatched()
     {
-        var order = new Order("o-1");
+        var order = Order.TryPlace("o-1", quantity: 1)!;
         order.TryCancel();
 
         Assert.That(order.TryDispatch(), Is.False);
